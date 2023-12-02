@@ -29,7 +29,7 @@ jobs:
       url: '${{ inputs.url }}'
 
     steps:
-    - name: Set Kustomize 🛠️
+    - name: Set Kustomize
       uses: imranismail/setup-kustomize@v2
       with:
         kustomize-version: "3.9.4"

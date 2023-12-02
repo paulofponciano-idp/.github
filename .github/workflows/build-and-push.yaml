@@ -37,5 +37,5 @@ jobs:
           push: true
           tags: paulofponciano/${{ github.repository }}:${{ inputs.tag }}, paulofponciano/${{ github.repository }}:latest
 
-      - name: Check rev.txt 🛠️
+      - name: Check rev.txt
         run: cat rev.txt
