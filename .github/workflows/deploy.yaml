@@ -39,7 +39,7 @@ jobs:
 
     - name: Update Docker Image Tag
       run: |
-        cd apps_deployed/${{ inputs.repository }}/overlays
+        cd deployed_apps/${{ inputs.repository }}/overlays
         OLD_TAG=$(cat kustomization.yaml | grep 'tag:' |  awk '{print $2}')
         NEW_TAG=${{ inputs.tag }}
         sed -i "s|$OLD_TAG|$NEW_TAG|g" kustomization.yaml
