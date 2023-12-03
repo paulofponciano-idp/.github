@@ -16,6 +16,7 @@ on:
         description: "Set Project URL"
         required: true  
         type: string
+        default: https://${{ github.repository }}.pauloponciano.digital
       environment:
         description: "Set Project Environment"
         required: true  
