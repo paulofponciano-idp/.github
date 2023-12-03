@@ -6,17 +6,14 @@ on:
         description: "Set Docker Image Tag"
         required: true  
         type: string
-        default: ${{ github.sha }}
       repository:
         description: "Set Repository Name"
         required: true  
         type: string
-        default: ${{ github.repository }}
       url:
         description: "Set Project URL"
         required: true  
         type: string
-        default: https://${{ github.repository }}.pauloponciano.digital
       environment:
         description: "Set Project Environment"
         required: true  
@@ -40,12 +37,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: build image and push to docker hub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v4
         with: 
           context: .
           push: true
-          tags: paulofponciano/${{ github.repository }}:${{ github.sha }},paulofponciano/${{ github.repository }}:latest
-      - run: echo ${{ github.repository }}
+          tags: paulofponciano/${{ inputs.repository }}:${{ inputs.tag }},paulofponciano/${{ inputs.repository }}:latest
 
   deploy:
     name: Set Kustomize and Deploy
@@ -66,7 +62,7 @@ jobs:
       - name: update k8s kustomization
         run: |
           cd deployed_apps/${{ inputs.repository }}/overlays
-          kustomize edit set image webgo=paulofponciano/${{ github.repository }}:${{ github.sha }}
+          kustomize edit set image webgo=paulofponciano/${{ inputs.repository }}:${{ inputs.tag }}
           cat kustomization.yaml
 
       - name: commit
