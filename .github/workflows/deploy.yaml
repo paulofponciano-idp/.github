@@ -6,10 +6,12 @@ on:
         description: "Set Docker Image Tag"
         required: true  
         type: string
+        default: ${{ github.sha }}
       repository:
         description: "Set Repository Name"
         required: true  
         type: string
+        default: ${{ github.repository }}
       url:
         description: "Set Project URL"
         required: true  
@@ -41,7 +43,7 @@ jobs:
         with: 
           context: .
           push: true
-          tags: paulofponciano/${{ github.repository }}:${{ inputs.tag }},paulofponciano/${{ github.repository }}:latest
+          tags: paulofponciano/${{ github.repository }}:${{ github.sha }},paulofponciano/${{ github.repository }}:latest
 
   deploy:
     name: Set Kustomize and Deploy
@@ -62,7 +64,7 @@ jobs:
       - name: update k8s kustomization
         run: |
           cd deployed_apps/${{ inputs.repository }}/overlays
-          kustomize edit set image webgo=paulofponciano/${{ github.repository }}:${{ inputs.tag }}
+          kustomize edit set image webgo=paulofponciano/${{ github.repository }}:${{ github.sha }}
           cat kustomization.yaml
 
       - name: commit
