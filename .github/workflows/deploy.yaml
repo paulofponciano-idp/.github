@@ -45,6 +45,7 @@ jobs:
           context: .
           push: true
           tags: paulofponciano/${{ github.repository }}:${{ github.sha }},paulofponciano/${{ github.repository }}:latest
+      - run: echo ${{ github.repository }}
 
   deploy:
     name: Set Kustomize and Deploy
