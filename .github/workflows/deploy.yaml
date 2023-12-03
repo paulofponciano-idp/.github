@@ -1,5 +1,4 @@
-name: GitOps Deploy
-
+name: Deploy
 on:
   workflow_call:
     inputs:
@@ -18,35 +17,56 @@ on:
       environment:
         description: "Set Project Environment"
         required: true  
-        type: string        
-
-jobs:
-  deploy:
-    name: GitOps Deploy
+        type: string
+        
+jobs: 
+  build: 
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    environment: 
-      name: '${{ inputs.environment }}'
-      url: '${{ inputs.url }}'
+    steps: 
+      - name: checkout 
+        uses: actions/checkout@v3
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: build image and push to docker hub
+        uses: docker/build-push-action@v4
+        with: 
+          context: .
+          push: true
+          tags: paulofponciano/${{ github.repository }}:${{ inputs.tag }},paulofponciano/${{ github.repository }}:latest
+
+  deploy:
+    name: Set Kustomize and Deploy
+    runs-on: ubuntu-latest
+    needs: build
     steps:
-    - name: Set Kustomize
-      uses: imranismail/setup-kustomize@v2
-      with:
-        kustomize-version: "3.9.4"
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: GitOps Checkout
-      run: git clone https://github.com/paulofponciano/EKS-Crossplane-ArgoCD.git .
+      - name: kustomize
+        uses: imranismail/setup-kustomize@v2
+        with: 
+          kustomize-version: v5.1.1
 
-    - name: Update Docker Image Tag
-      run: |
-        cd deployed_apps/${{ inputs.repository }}/overlays
-        OLD_TAG=$(cat kustomization.yaml | grep 'tag:' |  awk '{print $2}')
-        NEW_TAG=${{ inputs.tag }}
-        sed -i "s|$OLD_TAG|$NEW_TAG|g" kustomization.yaml
+      - name: GitOps Checkout
+        run: git clone https://github.com/paulofponciano/EKS-Crossplane-ArgoCD.git .
 
-    - name: Commit and Push
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git commit -am "[ci skip] :robot: Set New Image Tag to https://github.com/${{ github.repository }}/commit/${{ inputs.tag }}"
-        git push
+      - name: update k8s kustomization
+        run: |
+          cd deployed_apps/${{ inputs.repository }}/overlays
+          kustomize edit set image webgo=paulofponciano/${{ github.repository }}:${{ inputs.tag }}
+          cat kustomization.yaml
+
+      - name: commit
+        run: | 
+          git config --local user.email "paulofponciano@gmail.com"
+          git config --local user.name "Paulo"
+          git commit -am "actions change image tag"
+
+      - name: push
+        uses: ad-m/github-push-action@master
