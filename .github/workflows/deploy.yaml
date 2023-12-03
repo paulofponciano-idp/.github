@@ -23,6 +23,9 @@ jobs:
   build: 
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
+    environment: 
+      name: '${{ inputs.environment }}'
+      url: '${{ inputs.url }}'
     steps: 
       - name: checkout 
         uses: actions/checkout@v3
