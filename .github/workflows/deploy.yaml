@@ -57,11 +57,11 @@ jobs:
           kustomize-version: v5.1.1
 
       - name: GitOps Checkout
-        run: git clone https://github.com/paulofponciano/EKS-Crossplane-ArgoCD.git
+        run: git clone https://github.com/paulofponciano-idp/gitops.git
 
       - name: Update k8s kustomization
         run: |
-          cd EKS-Crossplane-ArgoCD/deployed_apps/${{ inputs.repository }}/overlays
+          cd gitops/deployed_apps/${{ inputs.repository }}/overlays
           kustomize edit set image webgo=paulofponciano/${{ inputs.repository }}:${{ inputs.tag }}
           cat kustomization.yaml
 
