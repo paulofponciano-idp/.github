@@ -61,7 +61,7 @@ jobs:
 
       - name: Update k8s kustomization
         run: |
-          cd deployed_apps/${{ inputs.repository }}/overlays
+          cd EKS-Crossplane-ArgoCD/deployed_apps/${{ inputs.repository }}/overlays
           kustomize edit set image webgo=paulofponciano/${{ inputs.repository }}:${{ inputs.tag }}
           cat kustomization.yaml
 
