@@ -69,6 +69,7 @@ jobs:
         run: |
           git config --local user.email "paulofponciano@gmail.com"
           git config --local user.name "Paulo"
+          git add .
           git commit -am "actions change image tag https://github.com/${{ github.repository }}/commit/${{ inputs.tag }}"
 
       - name: Push
