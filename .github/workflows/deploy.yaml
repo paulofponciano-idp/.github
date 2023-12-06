@@ -27,7 +27,7 @@ jobs:
       name: '${{ inputs.environment }}'
       url: '${{ inputs.url }}'
     steps: 
-      - name: checkout 
+      - name: Checkout 
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: build image and push to docker hub
+      - name: Build image and push to docker hub
         uses: docker/build-push-action@v4
         with: 
           context: .
@@ -48,10 +48,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: kustomize
+      - name: Kustomize
         uses: imranismail/setup-kustomize@v2
         with: 
           kustomize-version: v5.1.1
@@ -59,17 +59,17 @@ jobs:
       - name: GitOps Checkout
         run: git clone https://github.com/paulofponciano/EKS-Crossplane-ArgoCD.git .
 
-      - name: update k8s kustomization
+      - name: Update k8s kustomization
         run: |
           cd deployed_apps/${{ inputs.repository }}/overlays
           kustomize edit set image webgo=paulofponciano/${{ inputs.repository }}:${{ inputs.tag }}
           cat kustomization.yaml
 
-      - name: commit
+      - name: Commit
         run: | 
           git config --local user.email "paulofponciano@gmail.com"
           git config --local user.name "Paulo"
           git commit -am "actions change image tag"
 
-      - name: push
+      - name: Push
         uses: ad-m/github-push-action@master
