@@ -65,14 +65,10 @@ jobs:
           kustomize edit set image webgo=paulofponciano/${{ inputs.repository }}:${{ inputs.tag }}
           cat kustomization.yaml
 
-      - name: Commit
+      - name: Commit and Push
         run: |
           git config --local user.email "paulofponciano@gmail.com"
           git config --local user.name "Paulo"
           git add .
           git commit -am "actions change image tag"
-
-      - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          force: true
+          git push
