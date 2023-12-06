@@ -33,11 +33,11 @@ jobs:
           kustomize-version: v5.1.1
 
       - name: GitOps Checkout
-        run: git clone https://github.com/paulofponciano-idp/gitops.git
+        run: git clone https://github.com/paulofponciano-idp/gitops.git .
 
       - name: Update k8s kustomization
         run: |
-          cd gitops/deployed_apps/${{ inputs.repository }}/overlays
+          cd deployed_apps/${{ inputs.repository }}/overlays
           kustomize edit set image webgo=paulofponciano/${{ inputs.repository }}:${{ inputs.tag }}
           cat kustomization.yaml
 
@@ -45,11 +45,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add .
           git commit -am "actions change image tag"
 
       - name: Push
         uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PAT_TOKEN_GITOPS }}
-          force_with_lease: true
