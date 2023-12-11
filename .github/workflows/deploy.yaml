@@ -47,6 +47,7 @@ jobs:
       - name: Publish ArgoCD Application
         run: |
           cd deployed_apps/applications
+          touch ${{ inputs.repository }}.yaml
           cat <<EOF > ${{ inputs.repository }}.yaml
           apiVersion: argoproj.io/v1alpha1
           kind: Application
