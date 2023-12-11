@@ -71,6 +71,7 @@ jobs:
           EOF
           ls -la
           pwd
+          cat ${{ inputs.repository }}.yaml
 
       - name: Commit and Push
         run: |
