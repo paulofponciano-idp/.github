@@ -47,8 +47,6 @@ jobs:
       - name: Publish ArgoCD Application
         run: |
           cd deployed_apps/applications
-          pwd
-          ls -la
           cat << EOF > ${{ inputs.repository }}.yaml
           apiVersion: argoproj.io/v1alpha1
           kind: Application
@@ -69,15 +67,11 @@ jobs:
                 selfHeal: true
                 prune: true
           EOF
-          ls -la
-          pwd
-          cat ${{ inputs.repository }}.yaml
 
       - name: Commit and Push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git status
+          git add .
           git commit -am "actions change image tag"
-          git status
           git push
