@@ -47,6 +47,7 @@ jobs:
       - name: Publish ArgoCD Application
         run: |
           cd deployed_apps/applications
+          pwd
           ls -la
           cat << EOF > ${{ inputs.repository }}.yaml
           apiVersion: argoproj.io/v1alpha1
@@ -69,6 +70,7 @@ jobs:
                 prune: true
           EOF
           ls -la
+          pwd
 
       - name: Commit and Push
         run: |
