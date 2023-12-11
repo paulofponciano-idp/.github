@@ -47,6 +47,7 @@ jobs:
       - name: Publish ArgoCD Application
         run: |
           cd deployed_apps/applications
+          ls -la
           cat << EOF > ${{ inputs.repository }}.yaml
           apiVersion: argoproj.io/v1alpha1
           kind: Application
@@ -67,6 +68,7 @@ jobs:
                 selfHeal: true
                 prune: true
           EOF
+          ls -la
 
       - name: Commit and Push
         run: |
